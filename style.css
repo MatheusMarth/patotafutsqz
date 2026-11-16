@@ -337,6 +337,7 @@ html[data-contrast="alto"] .card {
 }
 input[type="text"],
 input[type="number"],
+input[type="password"],
 select {
   width: 100%;
   min-height: var(--touch);
@@ -747,4 +748,39 @@ dialog h2 {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
+}
+
+[hidden] {
+  display: none !important;
+}
+.cota-info {
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-variant);
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.25rem;
+  padding: 0 0.9rem;
+  border-radius: var(--radius-full);
+  border: 2px solid currentColor;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.badge.pendente {
+  background: var(--warn-container);
+  color: var(--warn);
+}
+.badge.pago {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+.pin-erro {
+  min-height: 1.4em;
+  color: var(--error);
+  font-weight: 700;
 }

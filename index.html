@@ -32,6 +32,7 @@
         <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H5z M8 3v6h8 M8 21v-7h8v7"/></symbol>
         <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
         <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></symbol>
+        <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
         <symbol id="i-in" viewBox="0 0 24 24"><path d="M12 19V5 M5 12l7-7 7 7"/></symbol>
         <symbol id="i-out" viewBox="0 0 24 24"><path d="M12 5v14 M19 12l-7 7-7-7"/></symbol>
       </defs>
@@ -48,6 +49,10 @@
         <button type="button" id="btn-contrast" aria-pressed="false" aria-label="Alternar modo de alto contraste">
           <svg class="icon" aria-hidden="true"><use href="#i-contrast" /></svg>
           <span>Alto contraste</span>
+        </button>
+        <button type="button" id="btn-admin" aria-pressed="false" aria-label="Entrar ou sair do modo organizador">
+          <svg class="icon" aria-hidden="true"><use href="#i-lock" /></svg>
+          <span id="btn-admin-txt">Organizador</span>
         </button>
       </div>
     </header>
@@ -89,11 +94,11 @@
             <h2 id="titulo-comunicacao">Próximo jogo</h2>
           </div>
           <p class="aviso-atual" id="aviso-atual"></p>
-          <div class="field">
+          <div class="field admin-only">
             <label for="info-jogo">Dia, horário e recados</label>
             <input type="text" id="info-jogo" autocomplete="off" />
           </div>
-          <button type="button" id="btn-salvar-aviso" class="btn btn-tonal">
+          <button type="button" id="btn-salvar-aviso" class="btn btn-tonal admin-only">
             <svg class="icon" aria-hidden="true"><use href="#i-save" /></svg>Atualizar aviso
           </button>
         </section>
@@ -104,7 +109,8 @@
             <h2 id="titulo-coordenacao">Lista de presença e cota</h2>
           </div>
 
-          <div class="field">
+          <p class="cota-info" id="cota-info"></p>
+          <div class="field admin-only">
             <label for="valor-cota">Valor da cota do dia (Pix)</label>
             <select id="valor-cota">
               <option value="5">R$ 5,00 por jogador</option>
@@ -129,7 +135,7 @@
 
           <ul id="lista-jogadores" class="player-list" aria-label="Jogadores confirmados"></ul>
 
-          <button type="button" id="btn-limpar-lista" class="btn btn-danger-outline">
+          <button type="button" id="btn-limpar-lista" class="btn btn-danger-outline admin-only">
             <svg class="icon" aria-hidden="true"><use href="#i-trash" /></svg>Nova lista (zerar o dia)
           </button>
         </section>
@@ -143,7 +149,7 @@
             <h2 id="titulo-sorteio">Sorteio de times</h2>
           </div>
           <p class="helper" id="sorteio-info"></p>
-          <button type="button" id="btn-sortear" class="btn btn-filled">
+          <button type="button" id="btn-sortear" class="btn btn-filled admin-only">
             <svg class="icon" aria-hidden="true"><use href="#i-shuffle" /></svg>Sortear times
           </button>
           <div id="resultado-sorteio" class="sorteio" aria-live="polite"></div>
@@ -165,15 +171,14 @@
 
           <div class="pix-box">
             <p><strong>Chave Pix do organizador</strong></p>
-            <p class="pix-chave" id="chave-pix">34993424681</p>
-            <p class="helper">Celular · Rafael Rodrigues Viana Pereira</p>
+            <p class="pix-chave" id="chave-pix">patota.campo@email.com</p>
             <button type="button" id="btn-copiar-pix" class="btn btn-outline">
               <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg>Copiar chave Pix
             </button>
           </div>
         </section>
 
-        <section class="card" aria-labelledby="titulo-gasto">
+        <section class="card admin-only" aria-labelledby="titulo-gasto">
           <h2 id="titulo-gasto">Registrar gasto do campo</h2>
           <p class="helper">Ex.: aluguel da máquina de podar grama, bola nova, rede…</p>
           <form id="form-despesa" class="stack" novalidate>
@@ -212,6 +217,23 @@
         <button type="button" class="btn btn-outline" id="dlg-cancelar">Cancelar</button>
         <button type="button" class="btn btn-filled" id="dlg-ok">Confirmar</button>
       </div>
+    </dialog>
+
+    <!-- Diálogo do PIN do organizador -->
+    <dialog id="dlg-pin" aria-labelledby="pin-titulo" aria-describedby="pin-texto">
+      <form id="form-pin" class="stack" novalidate>
+        <h2 id="pin-titulo">PIN</h2>
+        <p id="pin-texto"></p>
+        <div class="field">
+          <label for="pin-input">PIN do organizador</label>
+          <input type="password" id="pin-input" inputmode="numeric" autocomplete="off" maxlength="8" />
+        </div>
+        <p id="pin-erro" class="pin-erro" role="alert"></p>
+        <div class="dlg-actions">
+          <button type="button" class="btn btn-outline" id="pin-cancelar">Cancelar</button>
+          <button type="submit" class="btn btn-filled" id="pin-ok">Continuar</button>
+        </div>
+      </form>
     </dialog>
 
     <script src="script.js"></script>

@@ -187,6 +187,7 @@ abas.forEach((aba, i) => {
 $("info-jogo").value = estado.aviso;
 
 $("btn-salvar-aviso").addEventListener("click", () => {
+  if (!exigirAdmin()) return;
   const texto = $("info-jogo").value.trim();
   if (!texto) {
     toast("Escreva o dia, o horário ou um recado antes de salvar.", "erro");
@@ -205,6 +206,7 @@ const selectCota = $("valor-cota");
 selectCota.value = String(estado.cota);
 
 selectCota.addEventListener("change", () => {
+  if (!exigirAdmin()) return;
   estado.cota = Number(selectCota.value);
   salvarDados();
   toast(`Cota do dia: ${formatarMoeda(estado.cota)}`);
@@ -231,6 +233,7 @@ $("form-presenca").addEventListener("submit", (e) => {
 });
 
 function alternarPagamento(index) {
+  if (!exigirAdmin()) return;
   const j = estado.jogadores[index];
   if (!j) return;
 
@@ -252,6 +255,7 @@ function alternarPagamento(index) {
 }
 
 async function removerJogador(index) {
+  if (!exigirAdmin()) return;
   const j = estado.jogadores[index];
   if (!j) return;
   const ok = await confirmar(
@@ -282,6 +286,7 @@ $("lista-jogadores").addEventListener("click", (e) => {
 });
 
 $("btn-limpar-lista").addEventListener("click", async () => {
+  if (!exigirAdmin()) return;
   const ok = await confirmar(
     "Começar uma nova lista?",
     "A lista de jogadores e o sorteio serão apagados. O saldo em caixa será mantido.",
@@ -307,6 +312,7 @@ function embaralhar(lista) {
 }
 
 $("btn-sortear").addEventListener("click", () => {
+  if (!exigirAdmin()) return;
   if (estado.jogadores.length < 2) {
     toast("Adicione pelo menos 2 jogadores para sortear.", "erro");
     return;
@@ -326,6 +332,7 @@ $("btn-sortear").addEventListener("click", () => {
    ========================================================== */
 $("form-despesa").addEventListener("submit", (e) => {
   e.preventDefault();
+  if (!exigirAdmin()) return;
   const inDesc = $("desc-despesa");
   const inValor = $("valor-despesa");
   const desc = inDesc.value.trim();
@@ -378,6 +385,8 @@ function estadoVazio(icone_, titulo, texto) {
 function renderizarTudo() {
   // Mural
   $("aviso-atual").textContent = estado.aviso;
+  $("cota-info").textContent = `Cota do dia: ${formatarMoeda(estado.cota)} por jogador`;
+  aplicarAdminUI();
 
   // Lista de jogadores
   const ul = $("lista-jogadores");
@@ -403,10 +412,7 @@ function renderizarTudo() {
           <li>
             <span class="player-name">${esc(j.nome)}</span>
             <span class="player-actions">
-              <button type="button" class="btn-pay ${j.pago ? "pago" : "pendente"}"
-                data-acao="pagar" data-index="${i}" aria-label="${esc(aria)}">${rotulo}</button>
-              <button type="button" class="btn-icon" data-acao="remover" data-index="${i}"
-                aria-label="Remover ${esc(j.nome)} da lista">${icone("x")}</button>
+              ${acoes(j, i, rotulo, aria)}
             </span>
           </li>`;
       })
@@ -464,6 +470,118 @@ function renderizarTudo() {
       .join("");
   }
 }
+
+/* ==========================================================
+   MODO ORGANIZADOR (PIN)
+   Atenção: protege apenas a interface deste aparelho. Para proteção
+   real entre vários aparelhos é preciso um servidor (login no backend).
+   ========================================================== */
+const CHAVE_ADMIN = "patota_admin";
+let admin = false;
+try {
+  admin = sessionStorage.getItem("patota_admin_ativo") === "1";
+} catch {
+  admin = false;
+}
+
+async function hashPin(pin) {
+  const texto = "patota:" + pin;
+  if (window.crypto && crypto.subtle) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  let h = 5381; // alternativa simples se o navegador não tiver crypto.subtle
+  for (const ch of texto) h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0;
+  return "s" + h;
+}
+
+function exigirAdmin() {
+  if (admin) return true;
+  toast("Só o organizador pode fazer isso. Toque em “Organizador” no topo.", "erro");
+  return false;
+}
+
+function acoes(j, i, rotulo, aria) {
+  if (admin) {
+    return `<button type="button" class="btn-pay ${j.pago ? "pago" : "pendente"}"
+        data-acao="pagar" data-index="${i}" aria-label="${esc(aria)}">${rotulo}</button>
+      <button type="button" class="btn-icon" data-acao="remover" data-index="${i}"
+        aria-label="Remover ${esc(j.nome)} da lista">${icone("x")}</button>`;
+  }
+  const status = j.pago ? `${icone("check")}Pago` : `${icone("clock")}Pendente`;
+  return `<span class="badge ${j.pago ? "pago" : "pendente"}">${status}</span>`;
+}
+
+function aplicarAdminUI() {
+  document.querySelectorAll(".admin-only").forEach((el) => (el.hidden = !admin));
+  $("btn-admin").setAttribute("aria-pressed", String(admin));
+  $("btn-admin-txt").textContent = admin ? "Sair do organizador" : "Organizador";
+}
+
+function pedirPin(titulo, texto) {
+  return new Promise((resolve) => {
+    const dlg = $("dlg-pin");
+    const input = $("pin-input");
+    $("pin-titulo").textContent = titulo;
+    $("pin-texto").textContent = texto;
+    $("pin-erro").textContent = "";
+    input.value = "";
+    $("form-pin").onsubmit = (e) => {
+      e.preventDefault();
+      dlg.close();
+      resolve(input.value.trim());
+    };
+    $("pin-cancelar").onclick = () => {
+      dlg.close();
+      resolve(null);
+    };
+    dlg.addEventListener("cancel", () => resolve(null), { once: true });
+    dlg.showModal();
+    input.focus();
+  });
+}
+
+function definirAdmin(valor) {
+  admin = valor;
+  try {
+    sessionStorage.setItem("patota_admin_ativo", valor ? "1" : "0");
+  } catch {
+    /* ignora */
+  }
+  renderizarTudo();
+}
+
+$("btn-admin").addEventListener("click", async () => {
+  if (admin) {
+    definirAdmin(false);
+    toast("Você saiu do modo organizador");
+    return;
+  }
+  const salvo = lerLocal(CHAVE_ADMIN, null);
+  if (!salvo) {
+    const pin = await pedirPin(
+      "Criar PIN do organizador",
+      "Escolha um PIN de 4 a 8 números. Com ele, só você marca pagamentos e mexe no caixa.",
+    );
+    if (pin === null) return;
+    if (!/^\d{4,8}$/.test(pin)) {
+      toast("O PIN precisa ter de 4 a 8 números.", "erro");
+      return;
+    }
+    gravarLocal(CHAVE_ADMIN, await hashPin(pin));
+    definirAdmin(true);
+    toast("PIN criado. Modo organizador ativado!");
+  } else {
+    const pin = await pedirPin("Entrar como organizador", "Digite o seu PIN.");
+    if (pin === null) return;
+    if ((await hashPin(pin)) !== salvo) {
+      toast("PIN incorreto. Tente de novo.", "erro");
+      return;
+    }
+    definirAdmin(true);
+    toast("Modo organizador ativado");
+  }
+});
 
 /* ==========================================================
    INÍCIO
