@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b3d17" />
+    <title>Patota Acessível - Gestão Colaborativa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Sprite de ícones (estilo Lucide, inline) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m12 7 4 3-1.5 4.5h-5L8 10z M12 3v4 M16 10l4-1 M14.5 14.5l2.5 4 M9.5 14.5 7 18.5 M8 10 4 9"/></symbol>
+        <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z M15.5 8.5a5 5 0 0 1 0 7 M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.9 M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+        <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M16 3h5v5 M4 20 21 3 M21 16v5h-5 M15 15l6 6 M4 4l5 5"/></symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H5a2 2 0 0 1-2-2 M16 14h.01"/></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+        <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18 M8 6V4h8v2 M19 6l-1 14H6L5 6 M10 11v5 M14 11v5"/></symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
+        <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13 M22 2l-7 20-4-9-9-4z"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+        <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H5z M8 3v6h8 M8 21v-7h8v7"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+        <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></symbol>
+        <symbol id="i-in" viewBox="0 0 24 24"><path d="M12 19V5 M5 12l7-7 7 7"/></symbol>
+        <symbol id="i-out" viewBox="0 0 24 24"><path d="M12 5v14 M19 12l-7 7-7-7"/></symbol>
+      </defs>
+    </svg>
+
+    <a href="#conteudo" class="skip-link">Ir para o conteúdo principal</a>
+
+    <!-- Barra de Acessibilidade (WCAG 2.1) -->
+    <header class="a11y-bar" role="region" aria-label="Controles de acessibilidade">
+      <span class="a11y-title">Acessibilidade</span>
+      <div class="a11y-controls">
+        <button type="button" id="btn-font-down" aria-label="Diminuir tamanho do texto">A−</button>
+        <button type="button" id="btn-font-up" aria-label="Aumentar tamanho do texto">A+</button>
+        <button type="button" id="btn-contrast" aria-pressed="false" aria-label="Alternar modo de alto contraste">
+          <svg class="icon" aria-hidden="true"><use href="#i-contrast" /></svg>
+          <span>Alto contraste</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="hero-inner">
+        <svg class="icon icon-lg" aria-hidden="true"><use href="#i-ball" /></svg>
+        <div>
+          <h1>Patota do Campo Comunitário</h1>
+          <p>Gestão colaborativa para todas as idades</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegação por abas (inferior no celular, superior no desktop) -->
+    <nav class="tabbar" aria-label="Seções do aplicativo">
+      <div role="tablist" aria-label="Seções" class="tablist">
+        <button type="button" role="tab" id="tab-jogo" aria-controls="painel-jogo" aria-selected="true">
+          <span class="tab-pill"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></span>
+          <span class="tab-label">Jogo e lista</span>
+        </button>
+        <button type="button" role="tab" id="tab-sorteio" aria-controls="painel-sorteio" aria-selected="false" tabindex="-1">
+          <span class="tab-pill"><svg class="icon" aria-hidden="true"><use href="#i-shuffle" /></svg></span>
+          <span class="tab-label">Sorteio</span>
+        </button>
+        <button type="button" role="tab" id="tab-caixa" aria-controls="painel-caixa" aria-selected="false" tabindex="-1">
+          <span class="tab-pill"><svg class="icon" aria-hidden="true"><use href="#i-wallet" /></svg></span>
+          <span class="tab-label">Caixa</span>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container" id="conteudo" tabindex="-1">
+      <!-- ABA 1: COMUNICAÇÃO + COORDENAÇÃO -->
+      <div role="tabpanel" id="painel-jogo" aria-labelledby="tab-jogo" class="panel">
+        <section class="card card-aviso" aria-labelledby="titulo-comunicacao">
+          <div class="card-head">
+            <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-megaphone" /></svg>Comunicação</span>
+            <h2 id="titulo-comunicacao">Próximo jogo</h2>
+          </div>
+          <p class="aviso-atual" id="aviso-atual"></p>
+          <div class="field">
+            <label for="info-jogo">Dia, horário e recados</label>
+            <input type="text" id="info-jogo" autocomplete="off" />
+          </div>
+          <button type="button" id="btn-salvar-aviso" class="btn btn-tonal">
+            <svg class="icon" aria-hidden="true"><use href="#i-save" /></svg>Atualizar aviso
+          </button>
+        </section>
+
+        <section class="card" aria-labelledby="titulo-coordenacao">
+          <div class="card-head">
+            <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg>Coordenação</span>
+            <h2 id="titulo-coordenacao">Lista de presença e cota</h2>
+          </div>
+
+          <div class="field">
+            <label for="valor-cota">Valor da cota do dia (Pix)</label>
+            <select id="valor-cota">
+              <option value="5">R$ 5,00 por jogador</option>
+              <option value="10">R$ 10,00 por jogador</option>
+            </select>
+          </div>
+
+          <form id="form-presenca" class="stack" novalidate>
+            <div class="field">
+              <label for="nome-jogador">Nome ou apelido do jogador</label>
+              <input type="text" id="nome-jogador" placeholder="Ex.: Seu Antônio" autocomplete="off" required />
+            </div>
+            <button type="submit" class="btn btn-filled">
+              <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg>Adicionar na lista
+            </button>
+          </form>
+
+          <div class="stats">
+            <div class="stat"><span>Confirmados</span><strong id="contador-jogadores">0</strong></div>
+            <div class="stat"><span>Arrecadado hoje</span><strong id="arrecadado-hoje">R$ 0,00</strong></div>
+          </div>
+
+          <ul id="lista-jogadores" class="player-list" aria-label="Jogadores confirmados"></ul>
+
+          <button type="button" id="btn-limpar-lista" class="btn btn-danger-outline">
+            <svg class="icon" aria-hidden="true"><use href="#i-trash" /></svg>Nova lista (zerar o dia)
+          </button>
+        </section>
+      </div>
+
+      <!-- ABA 2: SORTEIO -->
+      <div role="tabpanel" id="painel-sorteio" aria-labelledby="tab-sorteio" class="panel" hidden>
+        <section class="card" aria-labelledby="titulo-sorteio">
+          <div class="card-head">
+            <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-shuffle" /></svg>Coordenação</span>
+            <h2 id="titulo-sorteio">Sorteio de times</h2>
+          </div>
+          <p class="helper" id="sorteio-info"></p>
+          <button type="button" id="btn-sortear" class="btn btn-filled">
+            <svg class="icon" aria-hidden="true"><use href="#i-shuffle" /></svg>Sortear times
+          </button>
+          <div id="resultado-sorteio" class="sorteio" aria-live="polite"></div>
+        </section>
+      </div>
+
+      <!-- ABA 3: COOPERAÇÃO -->
+      <div role="tabpanel" id="painel-caixa" aria-labelledby="tab-caixa" class="panel" hidden>
+        <section class="card" aria-labelledby="titulo-cooperacao">
+          <div class="card-head">
+            <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-wallet" /></svg>Cooperação</span>
+            <h2 id="titulo-cooperacao">Caixa da pelada e manutenção</h2>
+          </div>
+
+          <div class="saldo" aria-live="polite">
+            <span>Saldo atual em caixa</span>
+            <strong id="saldo-caixa">R$ 0,00</strong>
+          </div>
+
+          <div class="pix-box">
+            <p><strong>Chave Pix do organizador</strong></p>
+            <p class="pix-chave" id="chave-pix">34993424681</p>
+            <p class="helper">Celular · Rafael Rodrigues Viana Pereira</p>
+            <button type="button" id="btn-copiar-pix" class="btn btn-outline">
+              <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg>Copiar chave Pix
+            </button>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="titulo-gasto">
+          <h2 id="titulo-gasto">Registrar gasto do campo</h2>
+          <p class="helper">Ex.: aluguel da máquina de podar grama, bola nova, rede…</p>
+          <form id="form-despesa" class="stack" novalidate>
+            <div class="field">
+              <label for="desc-despesa">O que foi comprado ou pago?</label>
+              <input type="text" id="desc-despesa" placeholder="Ex.: Bola nova" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="valor-despesa">Valor (R$)</label>
+              <input type="number" id="valor-despesa" placeholder="0,00" step="0.01" min="1" inputmode="decimal" required />
+            </div>
+            <button type="submit" class="btn btn-danger">
+              <svg class="icon" aria-hidden="true"><use href="#i-minus" /></svg>Descontar do caixa
+            </button>
+          </form>
+        </section>
+
+        <section class="card" aria-labelledby="titulo-historico">
+          <h2 id="titulo-historico">Histórico de movimentações</h2>
+          <ul id="historico-caixa" class="history-list"></ul>
+          <button type="button" id="btn-copiar-relatorio" class="btn btn-filled">
+            <svg class="icon" aria-hidden="true"><use href="#i-send" /></svg>Copiar prestação de contas para o WhatsApp
+          </button>
+        </section>
+      </div>
+    </main>
+
+    <!-- Notificações (toasts) -->
+    <div id="toast-area" class="toast-area" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Diálogo de confirmação acessível -->
+    <dialog id="dlg-confirmar" aria-labelledby="dlg-titulo" aria-describedby="dlg-texto">
+      <h2 id="dlg-titulo">Confirmar</h2>
+      <p id="dlg-texto"></p>
+      <div class="dlg-actions">
+        <button type="button" class="btn btn-outline" id="dlg-cancelar">Cancelar</button>
+        <button type="button" class="btn btn-filled" id="dlg-ok">Confirmar</button>
+      </div>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>
