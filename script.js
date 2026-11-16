@@ -130,6 +130,7 @@ $("btn-contrast").addEventListener("click", () => {
    ESTADO (localStorage)
    ========================================================== */
 const estadoPadrao = () => ({
+  chavePix: "patota.campo@email.com",
   aviso: "Sábado às 08:30 - Campo Comunitário (Levar colete)",
   cota: 10,
   saldoCaixa: 150.0,
@@ -351,6 +352,21 @@ $("form-despesa").addEventListener("submit", (e) => {
   toast(`Gasto de ${formatarMoeda(valor)} descontado do caixa`);
 });
 
+$("input-pix").value = estado.chavePix;
+
+$("btn-salvar-pix").addEventListener("click", () => {
+  if (!exigirAdmin()) return;
+  const nova = $("input-pix").value.trim();
+  if (!nova) {
+    toast("Digite a nova chave Pix antes de salvar.", "erro");
+    $("input-pix").focus();
+    return;
+  }
+  estado.chavePix = nova;
+  salvarDados();
+  toast("Chave Pix atualizada!");
+});
+
 $("btn-copiar-pix").addEventListener("click", async () => {
   const ok = await copiar($("chave-pix").textContent.trim());
   toast(ok ? "Chave Pix copiada!" : "Não foi possível copiar. Selecione a chave e copie manualmente.", ok ? "ok" : "erro");
@@ -386,6 +402,7 @@ function renderizarTudo() {
   // Mural
   $("aviso-atual").textContent = estado.aviso;
   $("cota-info").textContent = `Cota do dia: ${formatarMoeda(estado.cota)} por jogador`;
+  $("chave-pix").textContent = estado.chavePix;
   aplicarAdminUI();
 
   // Lista de jogadores
